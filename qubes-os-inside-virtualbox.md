@@ -122,7 +122,7 @@ may result in the following issues after rebooting the machine:
 
 ... and "*BdsDxe: Press any key to enter the Boot Manager Menu.*" messages appear, as well as a VirtualBoxVM window pops up, suggesting *mounting an operating system installation DVD*.
 
-Close this pop-up, press any key on your keyboard to load the Boot Manager Menu, and navigate to the following: *Boot Maintenance Manager* -> *Boot From File* -> (the *NO VOLUME LABEL [...]* only available option) -> *<EFI>* -> *<qubes>* -> *grubx64.efi*.
+Close this pop-up, press any key on your keyboard to load the Boot Manager Menu, and navigate to the following: `Boot Maintenance Manager` -> `Boot From File` -> (the `NO VOLUME LABEL [...]` only available option) -> `<EFI>` -> `<qubes>` -> `grubx64.efi`.
 
 You can recreate the boot entry with:
 
