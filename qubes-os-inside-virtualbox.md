@@ -36,9 +36,9 @@ Start the virtual machine and once the boot menu shows up, uncheck the option "*
 
 On the "*WELCOME TO QUBES OS R4.2.*" screen click on the blue "*Continue*" button, leaving the default "*English (United States)*" language option intact.
 
-A modal with pop up with the notice "*This is unstable, pre-release software.*" - click on the "*I want to proceed.*" button.
+A modal will pop up with the notice "*This is unstable, pre-release software.*" - click on the "*I want to proceed.*" button.
 
-A modal with pop up with the notice "*Unsupported Hardware Detected*" and the following missing features: "*HVM/VT-x/AMD-V, IOMMU/VT-d/AMD-Vi, HAP/SLAT/EPT/RVI, Interrupt Remapping*". Click on the "*Continue*" button.
+A modal will pop up with the notice "*Unsupported Hardware Detected*" and the following missing features: "*HVM/VT-x/AMD-V, IOMMU/VT-d/AMD-Vi, HAP/SLAT/EPT/RVI, Interrupt Remapping*". Click on the "*Continue*" button.
 
 On the "*INSTALLATION SUMMARY*" screen select the "*SYSTEM -> Installation Destination*" option and scroll down, so the "*Encryption -> Encrypt my data.*" option will show up. Uncheck it - we don't need to encrypt the disk in this laboratory setting. Then click on the blue "*Done*" button in the top left corner.
 
