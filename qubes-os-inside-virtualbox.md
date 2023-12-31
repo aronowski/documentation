@@ -8,8 +8,8 @@ Despite the final effect being an unsupported configuration and lacking essentia
 
 ## Things to keep in mind
 
-- This procedure is for the pre-release Qubes OS 4.2.0-rc3 version, despite the document being written, when a stable Qubes OS 4.2.0 version has been already made public.
-- VirtualBox Version 7.0.10 r158379 has been used for this laboratory despite it not being the newest version at the time of writing this document.
+- This procedure is for the Qubes OS 4.2.0 release
+- VirtualBox Version 7.0.12 r159484 has been used for this laboratory, as it was the newest version at the time of writing this document.
 - Most of the time, especially during the installation phases, the virtual machine display resolution will be stuck at 800x600, making some crucial menus out-of-bounds - there will be descriptions, how to handle them.
 - The options described in this document have been tested to work fine, but may not be required for the whole setup to work fine - feel free to experiment with them on your own.
 
@@ -17,7 +17,7 @@ Despite the final effect being an unsupported configuration and lacking essentia
 
 Create a new virtual machine with the following parameters:
 
-- ISO Image: `Qubes-R4.2.0-rc3-x86_64.iso`
+- ISO Image: `Qubes-R4.2.0-x86_64.iso`
 - Skip Unattended Installation: (checked)
 - Base Memory: 8192 MB
 - Processors: 4
@@ -32,11 +32,9 @@ Then open the virtual machine's Settings menu and change the following:
 
 ## Installation
 
-Start the virtual machine and once the boot menu shows up, uncheck the option "*View -> Auto-resize Guest Display*" in the virtual machine's menu bar. Select the *Install Qubes OS R4.2.0-rc3* option, and wait for the installer to start automatically.
+Start the virtual machine and once the boot menu shows up, uncheck the option "*View -> Auto-resize Guest Display*" in the virtual machine's menu bar. Select the *Install Qubes OS R4.2.0* option, and wait for the installer to start automatically.
 
 On the "*WELCOME TO QUBES OS R4.2.*" screen click on the blue "*Continue*" button, leaving the default "*English (United States)*" language option intact.
-
-A modal will pop up with the notice "*This is unstable, pre-release software.*" - click on the "*I want to proceed.*" button.
 
 A modal will pop up with the notice "*Unsupported Hardware Detected*" and the following missing features: "*HVM/VT-x/AMD-V, IOMMU/VT-d/AMD-Vi, HAP/SLAT/EPT/RVI, Interrupt Remapping*". Click on the "*Continue*" button.
 
@@ -59,7 +57,7 @@ Wait until the system has finished loading - an "*INITIAL SETUP*" screen will ap
 - Automatically accept USB mice (discouraged): (checked)
 - Automatically accept USB keyboard (discouraged if non-USB keyboard is available): (checked)
 
-on the blue "*Done*" button in the top left corner. You'll be back on the "*INITIAL SETUP*" screen with the crucial options out-of-bounds due to low screen resolution - press the "Tab" key twice and then the "Enter" key to proceed.
+Click on the blue "*Done*" button in the top left corner. You'll be back on the "*INITIAL SETUP*" screen with the crucial options out-of-bounds due to low screen resolution - press the "Tab" key twice and then the "Enter" key to proceed.
 
 The "*INSTALLATION PROGRESS*" screen will show up. Wait until the installation is finished (it may take a long time) and a modal will pop up with the message: 
 
@@ -78,6 +76,13 @@ Switch all domains from using PVH or HVM virtualization modes to use PV instead.
 
 ```
 [user@dom0 ~]$ for i in $(qvm-ls --raw-list) ; do qvm-prefs $i virt_mode pv ; done
+```
+
+Next, apply these workarounds for *sys-net*:
+
+```
+[user@dom0 ~]$ qvm-features sys-net pci-e820-host False
+[user@dom0 ~]$ qvm-prefs --set sys-net kernelopts " iommu=soft"
 ```
 
 Next, switch to the `root` user and edit `/etc/default/grub` by adding:
@@ -107,51 +112,6 @@ then run `grub2-mkconfig -o /etc/grub2-efi.cfg` and reboot.
 ## The results
 
 Once rebooted, log in to the desktop and wait for all autostarting qubes to start. You shall be able to play around in the graphical session and have a working Internet connection in your system. Have fun!
-
-## Issues and solutions
-
-Upgrading the release candidate version to its stable release with:
-
-```
-[user@dom0 ~]$ sudo qubes-dom0-update -y
-```
-
-may result in the following issues after rebooting the machine:
-
-### *BdsDxe: No bootable option or device was found.*
-
-... and "*BdsDxe: Press any key to enter the Boot Manager Menu.*" messages appear, as well as a VirtualBoxVM window pops up, suggesting *mounting an operating system installation DVD*.
-
-Close this pop-up, press any key on your keyboard to load the Boot Manager Menu, and navigate to the following: `Boot Maintenance Manager` -> `Boot From File` -> (the `NO VOLUME LABEL [...]` only available option) -> `<EFI>` -> `<qubes>` -> `grubx64.efi`.
-
-You can recreate the boot entry with:
-
-```
-[user@dom0 ~]$ sudo efibootmgr -v -c -u -L "Qubes OS" -l /EFI/qubes/grubx64.efi -d /dev/sda1 -p 1
-```
-
-assuming that */dev/sda1* is your EFI system partition. You can verify this with:
-
-```
-[user@dom0 ~]$ lsblk | grep /boot/efi
-```
-
-### no network devices in sys-net, no Internet connectivity
-
-Proceed with:
-
-```
-[user@dom0 ~]$ qvm-shutdown sys-firewall
-[user@dom0 ~]$ qvm-shutdown sys-net
-[user@dom0 ~]$ qvm-features sys-net pci-e820-host False
-[user@dom0 ~]$ qvm-prefs --set sys-net kernelopts " iommu=soft"
-[user@dom0 ~]$ qvm-start sys-net
-[user@dom0 ~]$ qvm-start sys-firewall
-```
-
-### Mouse doesn't work
-
-On the bottom status bar of the VirtualBox VM window right-click on the mouse icon and uncheck *Mouse Integration*.
 
 ---
 
